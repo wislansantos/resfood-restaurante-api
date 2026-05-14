@@ -3,6 +3,7 @@ package br.com.wgsdev.resfood.domain.model;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Column;
 
 import lombok.Data;
 
@@ -10,19 +11,19 @@ import lombok.Data;
 @Embeddable
 public class Endereco {
     
-    @JoinColumn(name = "endereco_cep")
+    @Column(name = "endereco_cep")
     private String cep;
     
-    @JoinColumn(name = "endereco_logradouro")
+    @Column(name = "endereco_logradouro")
     private String logradouro;
     
-    @JoinColumn(name = "endereco_numero")
+    @Column(name = "endereco_numero")
     private String numero;
     
-    @JoinColumn(name = "endereco_complemento")
+    @Column(name = "endereco_complemento")
     private String complemento;
     
-    @JoinColumn(name = "endereco_bairro")
+    @Column(name = "endereco_bairro")
     private String bairro;
     
     @ManyToOne
