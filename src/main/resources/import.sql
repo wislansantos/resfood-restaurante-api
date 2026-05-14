@@ -21,3 +21,5 @@ INSERT INTO cidade (nome, estado_id) VALUES ('Cidade C', 3);
 INSERT INTO permissao (nome, descricao) VALUES ('Permissao A', 'Descricao da permissao A');
 INSERT INTO permissao (nome, descricao) VALUES ('Permissao B', 'Descricao da permissao B');
 INSERT INTO permissao (nome, descricao) VALUES ('Permissao C', 'Descricao da permissao C');
+
+INSERT INTO restaurante_forma_pagamento (restaurante_id, forma_pagamento_id) VALUES (1, 1), (1, 2), (1, 3), (2, 3), (3, 2), (3, 3);
