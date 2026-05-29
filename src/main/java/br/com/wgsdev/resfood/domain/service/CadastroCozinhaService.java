@@ -30,4 +30,11 @@ public class CadastroCozinhaService {
 		}
 	}
 	
+	public Cozinha buscarOuFalhar(Long cozinhaId) {
+		return cozinhaRepository.findById(cozinhaId)
+		    .orElseThrow(() -> new EntidadeNaoEncontradaException(
+		        String.format("Não existe um cadastro de cozinha com código %d", cozinhaId)
+		    ));
+	}
+	
 }
