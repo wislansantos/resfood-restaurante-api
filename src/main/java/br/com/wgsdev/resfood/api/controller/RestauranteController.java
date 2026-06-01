@@ -23,7 +23,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.wgsdev.resfood.domain.model.Restaurante;
 import br.com.wgsdev.resfood.domain.repository.RestauranteRepository;
 import br.com.wgsdev.resfood.domain.service.CadastroRestauranteService;
-
+import br.com.wgsdev.resfood.domain.exception.NegocioException;
+import br.com.wgsdev.resfood.domain.exception.EntidadeNaoEncontradaException;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -48,15 +49,22 @@ public class RestauranteController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Restaurante adicionar(@RequestBody Restaurante restaurante) {
-		return cadastroRestaurante.salvar(restaurante);
+		try {
+			return cadastroRestaurante.salvar(restaurante);
+		} catch (EntidadeNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
+		}
 	}
 	
 	@PutMapping("/{restauranteId}")
 	public Restaurante atualizar(@PathVariable Long restauranteId, @RequestBody Restaurante restaurante) {
 		Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
-		
 		BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
-		return cadastroRestaurante.salvar(restauranteAtual);
+		try {
+			return cadastroRestaurante.salvar(restauranteAtual);
+		} catch (EntidadeNaoEncontradaException e) {
+			throw new NegocioException(e.getMessage());
+		}
 	}
 	
 	@PatchMapping("/{restauranteId}")
