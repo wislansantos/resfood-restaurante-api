@@ -19,7 +19,7 @@ import br.com.wgsdev.resfood.domain.model.Cidade;
 import br.com.wgsdev.resfood.domain.repository.CidadeRepository;
 import br.com.wgsdev.resfood.domain.service.CadastroCidadeService;
 import br.com.wgsdev.resfood.domain.exception.NegocioException;
-import br.com.wgsdev.resfood.domain.exception.EntidadeNaoEncontradaException;
+import br.com.wgsdev.resfood.domain.exception.EstadoNaoEncontradoException;
 
 @RestController
 @RequestMapping("/cidades")
@@ -46,8 +46,8 @@ public class CidadeController {
 	public Cidade adicionar(@RequestBody Cidade cidade) {
 		try {
 			return cadastroCidade.salvar(cidade);
-		} catch (EntidadeNaoEncontradaException e) {
-			throw new NegocioException(e.getMessage());
+		} catch (EstadoNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(), e);
 		}
 	}
 	
@@ -57,8 +57,8 @@ public class CidadeController {
 		BeanUtils.copyProperties(cidade, cidadeAtual, "id");
 		try {
 			return cadastroCidade.salvar(cidadeAtual);
-		} catch (EntidadeNaoEncontradaException e) {
-			throw new NegocioException(e.getMessage());
+		} catch (EstadoNaoEncontradoException e) {
+			throw new NegocioException(e.getMessage(), e);
 		}
 	}
 	

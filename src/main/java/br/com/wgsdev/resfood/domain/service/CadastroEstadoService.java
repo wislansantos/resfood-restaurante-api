@@ -5,7 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import br.com.wgsdev.resfood.domain.exception.EntidadeEmUsoException;
-import br.com.wgsdev.resfood.domain.exception.EntidadeNaoEncontradaException;
+import br.com.wgsdev.resfood.domain.exception.EstadoNaoEncontradoException;
 import br.com.wgsdev.resfood.domain.model.Estado;
 import br.com.wgsdev.resfood.domain.repository.EstadoRepository;
 
@@ -14,9 +14,6 @@ public class CadastroEstadoService {
 	
 	public static final String MSG_ESTADO_EM_USO
 	    = "Estado de código %d não pode ser removido, pois está em uso";
-	
-	public static final String MSG_ESTADO_NAO_ENCONTRADO
-	    = "Não existe um cadastro de estado com código %d";
 
 	@Autowired
 	private EstadoRepository estadoRepository;
@@ -37,8 +34,7 @@ public class CadastroEstadoService {
 	
 	public Estado buscarOuFalhar(Long estadoId) {
 		return estadoRepository.findById(estadoId)
-		    .orElseThrow(() -> new EntidadeNaoEncontradaException(
-				String.format(MSG_ESTADO_NAO_ENCONTRADO, estadoId)));
+		    .orElseThrow(() -> new EstadoNaoEncontradoException(estadoId));
 	}
 	
 }
