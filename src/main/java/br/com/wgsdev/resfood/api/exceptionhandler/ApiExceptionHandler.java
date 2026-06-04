@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 
 import br.com.wgsdev.resfood.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wgsdev.resfood.domain.exception.NegocioException;
+import br.com.wgsdev.resfood.domain.exception.EntidadeEmUsoException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
@@ -24,6 +25,19 @@ public class ApiExceptionHandler {
 		
 		return ResponseEntity
 		    .status(HttpStatus.NOT_FOUND)
+		    .body(problema);
+	}
+	
+	@ExceptionHandler(EntidadeEmUsoException.class)
+	public ResponseEntity<?> handleEntidadeEmUsoException(EntidadeEmUsoException ex) {
+		
+		Problem problema = Problem.builder()
+		    .dataHora(LocalDateTime.now())
+		    .mensagem(ex.getMessage())
+		    .build();
+		
+		return ResponseEntity
+		    .status(HttpStatus.CONFLICT)
 		    .body(problema);
 	}
 	
