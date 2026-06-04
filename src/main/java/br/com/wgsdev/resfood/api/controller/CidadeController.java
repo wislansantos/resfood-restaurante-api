@@ -1,7 +1,6 @@
 package br.com.wgsdev.resfood.api.controller;
 
 import java.util.List;
-import java.time.LocalDateTime;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.http.ResponseEntity;
 
 import br.com.wgsdev.resfood.domain.model.Cidade;
 import br.com.wgsdev.resfood.domain.repository.CidadeRepository;
 import br.com.wgsdev.resfood.domain.service.CadastroCidadeService;
 import br.com.wgsdev.resfood.domain.exception.NegocioException;
 import br.com.wgsdev.resfood.domain.exception.EstadoNaoEncontradoException;
-import br.com.wgsdev.resfood.domain.exception.EntidadeNaoEncontradaException;
-import br.com.wgsdev.resfood.domain.exception.NegocioException;
-import br.com.wgsdev.resfood.api.exceptionhandler.Problem;
 
 @RestController
 @RequestMapping("/cidades")
@@ -72,32 +66,6 @@ public class CidadeController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void remover(@PathVariable Long cidadeId) {
 		cadastroCidade.excluir(cidadeId);
-	}
-	
-	@ExceptionHandler(EntidadeNaoEncontradaException.class)
-	public ResponseEntity<?> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException ex) {
-		
-		Problem problema = Problem.builder()
-		    .dataHora(LocalDateTime.now())
-		    .mensagem(ex.getMessage())
-		    .build();
-		
-		return ResponseEntity
-		    .status(HttpStatus.NOT_FOUND)
-		    .body(problema);
-	}
-	
-	@ExceptionHandler(NegocioException.class)
-	public ResponseEntity<?> handleNegocioException(NegocioException ex) {
-		
-		Problem problema = Problem.builder()
-		    .dataHora(LocalDateTime.now())
-		    .mensagem(ex.getMessage())
-		    .build();
-		
-		return ResponseEntity
-		    .status(HttpStatus.BAD_REQUEST)
-		    .body(problema);
 	}
 	
 }
