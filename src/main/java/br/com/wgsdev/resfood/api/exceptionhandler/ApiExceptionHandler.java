@@ -38,11 +38,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		if (body == null) {
 			body = Problem.builder()
 			    .dataHora(LocalDateTime.now())
-			    .mensagem(HttpStatus.valueOf(status.value()).getReasonPhrase());
+			    .mensagem(HttpStatus.valueOf(status.value()).getReasonPhrase())
+			    .build();
 		} else if (body instanceof String) {
 			body = Problem.builder()
 			    .dataHora(LocalDateTime.now())
-			    .mensagem((String) body);
+			    .mensagem((String) body)
+		        .build();
 		}
 		return super.handleExceptionInternal(ex, body, headers, status, request);
 	}
