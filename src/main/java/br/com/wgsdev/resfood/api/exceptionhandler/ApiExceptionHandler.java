@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -28,6 +29,16 @@ import br.com.wgsdev.resfood.api.exceptionhandler.ProblemType;
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     
+	@Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        ProblemType problemType = ProblemType.RECURSO_NAO_ENCONTRADO;
+        String detail = String.format("O recurso '%s', que você tentou acessar, é inexistente.", ex.getRequestURL());
+        
+        Problem problema = createProblemBuilder(status, problemType, detail).build();
+        
+        return handleExceptionInternal(ex, problema, headers, status, request);
+    }
+	
 	@Override
 	protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 		if (ex instanceof MethodArgumentTypeMismatchException) {
@@ -46,9 +57,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 				+ "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
 				ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
 
-		Problem problem = createProblemBuilder(status, problemType, detail).build();
+		Problem problema = createProblemBuilder(status, problemType, detail).build();
 
-		return handleExceptionInternal(ex, problem, headers, status, request);
+		return handleExceptionInternal(ex, problema, headers, status, request);
 	}
 	
     @Override
@@ -76,9 +87,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		String detail = String.format("A propriedade '%s' não existe. "
 				+ "Corrija ou remova essa propriedade e tente novamente.", path);
 
-		Problem problem = createProblemBuilder(status, problemType, detail).build();
+		Problem problema = createProblemBuilder(status, problemType, detail).build();
 		
-		return handleExceptionInternal(ex, problem, headers, status, request);
+		return handleExceptionInternal(ex, problema, headers, status, request);
 	}
 	
 	private ResponseEntity<Object> handleInvalidFormat(InvalidFormatException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
@@ -98,7 +109,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<?> handleEntidadeNaoEncontrada(EntidadeNaoEncontradaException ex, WebRequest request) {
 		
 		HttpStatus status = HttpStatus.NOT_FOUND;
-		ProblemType problemType = ProblemType.ENTIDADE_NAO_ENCONTRADA;
+		ProblemType problemType = ProblemType.RECURSO_NAO_ENCONTRADO;
 		String detail = ex.getMessage();
 		
 		Problem problema = createProblemBuilder(status, problemType, detail).build();
