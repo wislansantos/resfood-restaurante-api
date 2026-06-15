@@ -1,5 +1,7 @@
 package br.com.wgsdev.resfood.api.exceptionhandler;
 
+import java.time.LocalDateTime;
+
 import lombok.Getter;
 import lombok.Builder;
 
@@ -17,5 +19,6 @@ public class Problem {
     private String detail;
     
     private String userMessage;
+    private LocalDateTime timestamp;
     
 }
