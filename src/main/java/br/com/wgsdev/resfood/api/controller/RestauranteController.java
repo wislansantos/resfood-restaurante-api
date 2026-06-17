@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 import br.com.wgsdev.resfood.domain.model.Restaurante;
 import br.com.wgsdev.resfood.domain.repository.RestauranteRepository;
@@ -54,7 +55,7 @@ public class RestauranteController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Restaurante adicionar(@RequestBody Restaurante restaurante) {
+	public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante) {
 		try {
 			return cadastroRestaurante.salvar(restaurante);
 		} catch (CozinhaNaoEncontradaException e) {
