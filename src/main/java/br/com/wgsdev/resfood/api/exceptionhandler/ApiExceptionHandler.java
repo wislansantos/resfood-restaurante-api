@@ -17,6 +17,7 @@ import org.springframework.beans.TypeMismatchException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.validation.BindingResult;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -26,7 +27,6 @@ import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import br.com.wgsdev.resfood.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wgsdev.resfood.domain.exception.NegocioException;
 import br.com.wgsdev.resfood.domain.exception.EntidadeEmUsoException;
-import br.com.wgsdev.resfood.api.exceptionhandler.ProblemType;
 
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -36,15 +36,24 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 				+ "o problema persistir, entre em contato com o administrador do sistema.";
 	
 	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid( MethodArgumentNotValidException ex,
-			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
 	    ProblemType problemType = ProblemType.DADOS_INVALIDOS;
 	    String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
-	        
+		    
+		BindingResult bindingResult = ex.getBindingResult();
+	    
+	    List<Problem.Field> problemFields = bindingResult.getFieldErrors().stream()
+	    		.map(fieldError -> Problem.Field.builder()
+	    				.name(fieldError.getField())
+	    				.userMessage(fieldError.getDefaultMessage())
+	    				.build())
+	    		.collect(Collectors.toList());
+		    
 	    Problem problema = createProblemBuilder(status, problemType, detail)
-	        .userMessage(detail)
-	        .build();
+		    .userMessage(detail)
+		    .fields(problemFields)
+		    .build();
 	    
 	    return handleExceptionInternal(ex, problema, headers, status, request);
 	}

@@ -1,6 +1,7 @@
 package br.com.wgsdev.resfood.api.exceptionhandler;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Builder;
@@ -19,5 +20,15 @@ public class Problem {
     private String title;
     private String detail;
     private String userMessage;
+    private List<Field> fields;
+    
+    @Getter
+    @Builder
+    public static class Field {
+        
+        private String name;
+        private String userMessage;
+        
+    }
     
 }
