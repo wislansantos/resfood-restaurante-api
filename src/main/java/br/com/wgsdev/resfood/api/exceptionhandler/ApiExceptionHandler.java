@@ -16,6 +16,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -34,6 +35,20 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		= "Ocorreu um erro interno inesperado no sistema. Tente novamente e se "
 				+ "o problema persistir, entre em contato com o administrador do sistema.";
 	
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid( MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
+	    ProblemType problemType = ProblemType.DADOS_INVALIDOS;
+	    String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
+	        
+	    Problem problema = createProblemBuilder(status, problemType, detail)
+	        .userMessage(detail)
+	        .build();
+	    
+	    return handleExceptionInternal(ex, problema, headers, status, request);
+	}
+	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
 		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;		
@@ -42,11 +57,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	    
 		ex.printStackTrace();
 		
-		Problem problem = createProblemBuilder(status, problemType, detail)
+		Problem problema = createProblemBuilder(status, problemType, detail)
 		    .userMessage(detail)
 		    .build();
 
-		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+		return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
 	}
     
     @Override
