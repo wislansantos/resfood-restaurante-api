@@ -25,14 +25,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.validation.annotation.Validated;
+import jakarta.validation.Valid;
 
 import br.com.wgsdev.resfood.domain.model.Restaurante;
 import br.com.wgsdev.resfood.domain.repository.RestauranteRepository;
 import br.com.wgsdev.resfood.domain.service.CadastroRestauranteService;
 import br.com.wgsdev.resfood.domain.exception.NegocioException;
 import br.com.wgsdev.resfood.domain.exception.CozinhaNaoEncontradaException;
-import br.com.wgsdev.resfood.Groups;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -56,7 +55,7 @@ public class RestauranteController {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Restaurante adicionar(@RequestBody @Validated(Groups.CadastroRestaurante.class) Restaurante restaurante) {
+	public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante) {
 		try {
 			return cadastroRestaurante.salvar(restaurante);
 		} catch (CozinhaNaoEncontradaException e) {
