@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import br.com.wgsdev.resfood.Groups;
+import br.com.wgsdev.resfood.core.validation.Groups;
 
 @Data
 @Entity

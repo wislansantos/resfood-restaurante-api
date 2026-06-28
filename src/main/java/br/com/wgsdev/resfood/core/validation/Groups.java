@@ -1,4 +1,4 @@
-package br.com.wgsdev.resfood;
+package br.com.wgsdev.resfood.core.validation;
 
 public interface Groups {
     

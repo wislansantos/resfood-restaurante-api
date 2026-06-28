@@ -31,7 +31,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import br.com.wgsdev.resfood.Groups;
+import br.com.wgsdev.resfood.core.validation.Groups;
 
 @Data
 @Entity
@@ -47,7 +47,7 @@ public class Restaurante {
 	@Column(nullable = false)
 	private String nome;
 	
-	@PositiveOrZero(message = "{TaxaFrete.invalida}")
+	@PositiveOrZero
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
 	
