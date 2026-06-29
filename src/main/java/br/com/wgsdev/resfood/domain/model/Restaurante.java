@@ -32,7 +32,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import br.com.wgsdev.resfood.core.validation.Groups;
-import br.com.wgsdev.resfood.core.validation.TaxaFrete;
 
 @Data
 @Entity
@@ -49,8 +48,7 @@ public class Restaurante {
 	private String nome;
 	
 	@NotNull
-	//@PositiveOrZero
-	@TaxaFrete
+	@PositiveOrZero
 	@Column(name = "taxa_frete", nullable = false)
 	private BigDecimal taxaFrete;
 	
