@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.validation.SmartValidator;
+import org.springframework.validation.BeanPropertyBindingResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -32,6 +34,7 @@ import br.com.wgsdev.resfood.domain.repository.RestauranteRepository;
 import br.com.wgsdev.resfood.domain.service.CadastroRestauranteService;
 import br.com.wgsdev.resfood.domain.exception.NegocioException;
 import br.com.wgsdev.resfood.domain.exception.CozinhaNaoEncontradaException;
+import br.com.wgsdev.resfood.core.validation.ValidacaoException;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -42,6 +45,9 @@ public class RestauranteController {
 	
 	@Autowired
 	private CadastroRestauranteService cadastroRestaurante;
+	
+	@Autowired
+	private SmartValidator validator;
 	
 	@GetMapping
 	public List<Restaurante> listar() {
@@ -79,7 +85,18 @@ public class RestauranteController {
 		Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
 		
 		merge(campos, restauranteAtual, request);
+		validate(restauranteAtual, "restaurante");
+		
 		return atualizar(restauranteId, restauranteAtual);
+	}
+	
+	private void validate(Restaurante restaurante, String objectName) {
+		BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurante, objectName);
+		validator.validate(restaurante, bindingResult);
+		
+		if (bindingResult.hasErrors()) {
+			throw new ValidacaoException(bindingResult);
+		}
 	}
 
 	private void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino, HttpServletRequest request) {
