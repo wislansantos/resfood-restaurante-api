@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import br.com.wgsdev.resfood.domain.exception.EntidadeNaoEncontradaException;
 import br.com.wgsdev.resfood.domain.exception.NegocioException;
 import br.com.wgsdev.resfood.domain.exception.EntidadeEmUsoException;
+import br.com.wgsdev.resfood.core.validation.ValidacaoException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -41,38 +42,44 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	
     @Autowired
     private MessageSource messageSource;
-    
+	    				
+	@ExceptionHandler(ValidacaoException.class)
+	public ResponseEntity<Object> handleValidacaoException(ValidacaoException ex, WebRequest request) {
+		return handleValidationInternal(ex, ex.getBindingResult(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+	}
+	
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+	    return handleValidationInternal(ex, ex.getBindingResult(), headers, status, request);
+	}
 
-	    ProblemType problemType = ProblemType.DADOS_INVALIDOS;
+	private ResponseEntity<Object> handleValidationInternal(Exception ex, BindingResult bindingResult, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+		ProblemType problemType = ProblemType.DADOS_INVALIDOS;
 	    String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
-		    
-		BindingResult bindingResult = ex.getBindingResult();
 	    
 	    List<Problem.Object> problemObjects = bindingResult.getAllErrors().stream()
 	    		.map(objectError -> {
-	    		    String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
-	    		    
-	    		    String name = objectError.getObjectName();
-	    		    
-	    		    if (objectError instanceof FieldError) {
+	    			String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
+	    			
+	    			String name = objectError.getObjectName();
+	    			
+	    			if (objectError instanceof FieldError) {
 	    				name = ((FieldError) objectError).getField();
 	    			}
-	    		    
-	    		    return Problem.Object.builder()
+	    			
+	    			return Problem.Object.builder()
 	    				.name(name)
 	    				.userMessage(message)
-	    		        .build();
+	    				.build();
 	    		})
 	    		.collect(Collectors.toList());
-		    
-	    Problem problema = createProblemBuilder(status, problemType, detail)
-		    .userMessage(detail)
-		    .objects(problemObjects)
-		    .build();
 	    
-	    return handleExceptionInternal(ex, problema, headers, status, request);
+	    Problem problem = createProblemBuilder(status, problemType, detail)
+	        .userMessage(detail)
+	        .objects(problemObjects)
+	        .build();
+	    
+	    return handleExceptionInternal(ex, problem, headers, status, request);
 	}
 	
 	@ExceptionHandler(Exception.class)
