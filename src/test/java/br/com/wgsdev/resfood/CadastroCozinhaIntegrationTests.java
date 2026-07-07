@@ -11,7 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import br.com.wgsdev.resfood.domain.model.Cozinha;
 import br.com.wgsdev.resfood.domain.service.CadastroCozinhaService;
-
+import br.com.wgsdev.resfood.domain.exception.EntidadeEmUsoException;
+import br.com.wgsdev.resfood.domain.exception.CozinhaNaoEncontradaException;
 
 @SpringBootTest
 class CadastroCozinhaIntegrationTests {
@@ -36,6 +37,16 @@ class CadastroCozinhaIntegrationTests {
 		novaCozinha.setNome(null);
 		
 		novaCozinha = cadastroCozinha.salvar(novaCozinha);
+	}
+    
+    @Test(expected = EntidadeEmUsoException.class)
+	public void deveFalhar_QuandoExcluirCozinhaEmUso() {
+		cadastroCozinha.excluir(1L);
+	}
+
+	@Test(expected = CozinhaNaoEncontradaException.class)
+	public void deveFalhar_QuandoExcluirCozinhaInexistente() {
+		cadastroCozinha.excluir(100L);
 	}
 
 }
