@@ -17,7 +17,7 @@ import br.com.wgsdev.resfood.domain.exception.EntidadeEmUsoException;
 import br.com.wgsdev.resfood.domain.exception.CozinhaNaoEncontradaException;
 
 @SpringBootTest
-class CadastroCozinhaIntegrationTests {
+class CadastroCozinhaIT {
 
   @Autowired
   private CadastroCozinhaService cadastroCozinha;
