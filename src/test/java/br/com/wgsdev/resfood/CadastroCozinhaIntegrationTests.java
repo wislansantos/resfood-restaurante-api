@@ -1,7 +1,6 @@
 package br.com.wgsdev.resfood;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,7 @@ class CadastroCozinhaIntegrationTests {
     private CadastroCozinhaService cadastroCozinha;
 
     @Test
-    public void testarCadastroCozinhaComSucesso() {
+    public void deveAtribuirId_QuandoCadastrarCozinhaComDadosCorretos() {
         Cozinha novaCozinha = new Cozinha();
         novaCozinha.setNome("Chinesa");
 
@@ -31,18 +30,12 @@ class CadastroCozinhaIntegrationTests {
         assertThat(novaCozinha.getId()).isNotNull();
     }
 
-    @Test
-    public void testarCadastroCozinhaSemNome() {
-        Cozinha novaCozinha = new Cozinha();
-        novaCozinha.setNome(null);
-
-        ConstraintViolationException erroEsperado =
-            Assertions.assertThrows(ConstraintViolationException.class, () -> {
-                cadastroCozinha.salvar(novaCozinha);
-            });
-
-        assertThat(erroEsperado).isNotNull();
-    }
+    @Test(expected = ConstraintViolationException.class)
+	public void deveFalhar_QuandoCadastrarCozinhaSemNome() {
+		Cozinha novaCozinha = new Cozinha();
+		novaCozinha.setNome(null);
+		
+		novaCozinha = cadastroCozinha.salvar(novaCozinha);
+	}
 
 }
-
