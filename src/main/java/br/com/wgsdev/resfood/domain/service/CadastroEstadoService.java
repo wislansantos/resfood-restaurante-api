@@ -3,6 +3,7 @@ package br.com.wgsdev.resfood.domain.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.wgsdev.resfood.domain.exception.EntidadeEmUsoException;
 import br.com.wgsdev.resfood.domain.exception.EstadoNaoEncontradoException;
@@ -18,10 +19,12 @@ public class CadastroEstadoService {
 	@Autowired
 	private EstadoRepository estadoRepository;
 	
+	@Transactional
 	public Estado salvar(Estado estado) {
 		return estadoRepository.save(estado);
 	}
 	
+	@Transactional
 	public void excluir(Long estadoId) {
 		try {
 			buscarOuFalhar(estadoId);

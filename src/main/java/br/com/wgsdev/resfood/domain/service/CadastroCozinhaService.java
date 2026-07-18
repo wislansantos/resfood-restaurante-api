@@ -3,6 +3,7 @@ package br.com.wgsdev.resfood.domain.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.wgsdev.resfood.domain.exception.EntidadeEmUsoException;
 import br.com.wgsdev.resfood.domain.exception.CozinhaNaoEncontradaException;
@@ -18,10 +19,12 @@ public class CadastroCozinhaService {
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
 	
+	@Transactional
 	public Cozinha salvar(Cozinha cozinha) {
 		return cozinhaRepository.save(cozinha);
 	}
 	
+	@Transactional
 	public void excluir(Long cozinhaId) {
 		try {
 			buscarOuFalhar(cozinhaId);
