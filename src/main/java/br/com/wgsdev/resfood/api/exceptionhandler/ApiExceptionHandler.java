@@ -2,7 +2,7 @@ package br.com.wgsdev.resfood.api.exceptionhandler;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -222,14 +222,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 		if (body == null) {
 			body = Problem.builder()
-			    .timestamp(LocalDateTime.now())
+			    .timestamp(OffsetDateTime.now())
 			    .status(status.value())
 			    .title(HttpStatus.valueOf(status.value()).getReasonPhrase())
 			    .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
 			    .build();
 		} else if (body instanceof String) {
 			body = Problem.builder()
-			    .timestamp(LocalDateTime.now())
+			    .timestamp(OffsetDateTime.now())
 			    .status(status.value())
 			    .title((String) body)
 			    .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
@@ -240,7 +240,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	private Problem.ProblemBuilder createProblemBuilder(HttpStatusCode status, ProblemType problemType, String detail) {
 		return Problem.builder()
-		    .timestamp(LocalDateTime.now())
+		    .timestamp(OffsetDateTime.now())
 		    .status(status.value())
 		    .type(problemType.getUri())
 		    .title(problemType.getTitle())

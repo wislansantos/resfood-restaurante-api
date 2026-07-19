@@ -1,6 +1,6 @@
 package br.com.wgsdev.resfood.api.exceptionhandler;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import lombok.Getter;
@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class Problem {
     
     private Integer status;
-    private LocalDateTime timestamp;
+    private OffsetDateTime timestamp;
     private String type;
     private String title;
     private String detail;

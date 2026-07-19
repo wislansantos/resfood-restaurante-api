@@ -2,7 +2,7 @@ package br.com.wgsdev.resfood.domain.model;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -39,7 +39,7 @@ public class Usuario {
     
     @CreationTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
-    private LocalDateTime dataCadastro;
+    private OffsetDateTime dataCadastro;
     
     @ManyToMany
     @JoinTable(name = "usuario_grupo",
