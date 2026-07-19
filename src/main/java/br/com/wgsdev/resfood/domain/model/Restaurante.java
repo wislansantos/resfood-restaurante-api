@@ -3,7 +3,7 @@ package br.com.wgsdev.resfood.domain.model;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.ArrayList;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -62,11 +62,11 @@ public class Restaurante {
 
   @CreationTimestamp
   @Column(nullable = false, columnDefinition = "datetime")
-  private LocalDateTime dataCadastro;
+  private OffsetDateTime dataCadastro;
 
   @UpdateTimestamp
   @Column(nullable = false, columnDefinition = "datetime")
-  private LocalDateTime dataAtualizacao;
+  private OffsetDateTime dataAtualizacao;
 
   @ManyToMany
   @JoinTable(name = "restaurante_forma_pagamento", joinColumns = @JoinColumn(name = "restaurante_id"), inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
