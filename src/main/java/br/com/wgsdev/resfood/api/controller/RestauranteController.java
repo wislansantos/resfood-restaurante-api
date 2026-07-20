@@ -21,47 +21,53 @@ import br.com.wgsdev.resfood.domain.model.Restaurante;
 import br.com.wgsdev.resfood.domain.repository.RestauranteRepository;
 import br.com.wgsdev.resfood.domain.service.CadastroRestauranteService;
 import br.com.wgsdev.resfood.domain.exception.NegocioException;
+import br.com.wgsdev.resfood.api.model.RestauranteModel;
 import br.com.wgsdev.resfood.domain.exception.CozinhaNaoEncontradaException;
 
 @RestController
 @RequestMapping("/restaurantes")
 public class RestauranteController {
 
-	@Autowired
-	private RestauranteRepository restauranteRepository;
-	
-	@Autowired
-	private CadastroRestauranteService cadastroRestaurante;
-	
-	@GetMapping
-	public List<Restaurante> listar() {
-		return restauranteRepository.findAll();
-	}
-	
-	@GetMapping("/{restauranteId}")
-	public Restaurante buscar(@PathVariable Long restauranteId) {
-		return cadastroRestaurante.buscarOuFalhar(restauranteId);
-	}
-	
-	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante) {
-		try {
-			return cadastroRestaurante.salvar(restaurante);
-		} catch (CozinhaNaoEncontradaException e) {
-			throw new NegocioException(e.getMessage(), e);
-		}
-	}
-	
-	@PutMapping("/{restauranteId}")
-	public Restaurante atualizar(@PathVariable Long restauranteId, @RequestBody @Valid Restaurante restaurante) {
-		Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
-		BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
-		try {
-			return cadastroRestaurante.salvar(restauranteAtual);
-		} catch (CozinhaNaoEncontradaException e) {
-			throw new NegocioException(e.getMessage(), e);
-		}
-	}
-	
+  @Autowired
+  private RestauranteRepository restauranteRepository;
+
+  @Autowired
+  private CadastroRestauranteService cadastroRestaurante;
+
+  @GetMapping
+  public List<Restaurante> listar() {
+    return restauranteRepository.findAll();
+  }
+
+  @GetMapping("/{restauranteId}")
+  public RestauranteModel buscar(@PathVariable Long restauranteId) {
+    Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
+
+    RestauranteModel restauranteModel = null;
+
+    return restauranteModel;
+  }
+
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public Restaurante adicionar(@RequestBody @Valid Restaurante restaurante) {
+    try {
+      return cadastroRestaurante.salvar(restaurante);
+    } catch (CozinhaNaoEncontradaException e) {
+      throw new NegocioException(e.getMessage(), e);
+    }
+  }
+
+  @PutMapping("/{restauranteId}")
+  public Restaurante atualizar(@PathVariable Long restauranteId, @RequestBody @Valid Restaurante restaurante) {
+    Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
+    BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro",
+        "produtos");
+    try {
+      return cadastroRestaurante.salvar(restauranteAtual);
+    } catch (CozinhaNaoEncontradaException e) {
+      throw new NegocioException(e.getMessage(), e);
+    }
+  }
+
 }
