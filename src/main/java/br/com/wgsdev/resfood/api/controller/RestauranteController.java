@@ -1,7 +1,6 @@
 package br.com.wgsdev.resfood.api.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
@@ -23,7 +22,7 @@ import br.com.wgsdev.resfood.domain.model.Restaurante;
 import br.com.wgsdev.resfood.domain.repository.RestauranteRepository;
 import br.com.wgsdev.resfood.domain.service.CadastroRestauranteService;
 import br.com.wgsdev.resfood.domain.exception.NegocioException;
-import br.com.wgsdev.resfood.api.model.CozinhaModel;
+import br.com.wgsdev.resfood.api.assembler.RestauranteModelAssembler;
 import br.com.wgsdev.resfood.api.model.RestauranteModel;
 import br.com.wgsdev.resfood.api.model.input.RestauranteInput;
 import br.com.wgsdev.resfood.domain.exception.CozinhaNaoEncontradaException;
@@ -38,16 +37,19 @@ public class RestauranteController {
   @Autowired
   private CadastroRestauranteService cadastroRestaurante;
 
+  @Autowired
+  private RestauranteModelAssembler restauranteModelAssembler;
+
   @GetMapping
   public List<RestauranteModel> listar() {
-    return toCollectionModel(restauranteRepository.findAll());
+    return restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
   }
 
   @GetMapping("/{restauranteId}")
   public RestauranteModel buscar(@PathVariable Long restauranteId) {
     Restaurante restaurante = cadastroRestaurante.buscarOuFalhar(restauranteId);
 
-    return toModel(restaurante);
+    return restauranteModelAssembler.toModel(restaurante);
   }
 
   @PostMapping
@@ -56,7 +58,7 @@ public class RestauranteController {
     try {
       Restaurante restaurante = toDomainObject(restauranteInput);
 
-      return toModel(cadastroRestaurante.salvar(restaurante));
+      return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restaurante));
     } catch (CozinhaNaoEncontradaException e) {
       throw new NegocioException(e.getMessage(), e);
     }
@@ -72,30 +74,10 @@ public class RestauranteController {
         "produtos");
 
     try {
-      return toModel(cadastroRestaurante.salvar(restauranteAtual));
+      return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restauranteAtual));
     } catch (CozinhaNaoEncontradaException e) {
       throw new NegocioException(e.getMessage(), e);
     }
-  }
-
-  private RestauranteModel toModel(Restaurante restaurante) {
-    CozinhaModel cozinhaModel = new CozinhaModel();
-    cozinhaModel.setId(restaurante.getCozinha().getId());
-    cozinhaModel.setNome(restaurante.getCozinha().getNome());
-
-    RestauranteModel restauranteModel = new RestauranteModel();
-    restauranteModel.setId(restaurante.getId());
-    restauranteModel.setNome(restaurante.getNome());
-    restauranteModel.setTaxaFrete(restaurante.getTaxaFrete());
-    restauranteModel.setCozinha(cozinhaModel);
-
-    return restauranteModel;
-  }
-
-  private List<RestauranteModel> toCollectionModel(List<Restaurante> restaurantes) {
-    return restaurantes.stream()
-        .map(restaurante -> toModel(restaurante))
-        .collect(Collectors.toList());
   }
 
   private Restaurante toDomainObject(RestauranteInput restauranteInput) {
