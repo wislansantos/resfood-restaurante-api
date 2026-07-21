@@ -4,7 +4,6 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -70,11 +69,8 @@ public class RestauranteController {
   @PutMapping("/{restauranteId}")
   public RestauranteModel atualizar(@PathVariable Long restauranteId,
       @RequestBody @Valid RestauranteInput restauranteInput) {
-    Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
-
     Restaurante restauranteAtual = cadastroRestaurante.buscarOuFalhar(restauranteId);
-    BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro",
-        "produtos");
+    restauranteInputDisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
 
     try {
       return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restauranteAtual));
