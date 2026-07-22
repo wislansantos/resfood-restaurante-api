@@ -9,13 +9,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.NotBlank;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import br.com.wgsdev.resfood.core.validation.Groups;
 
 @Data
 @Entity
@@ -23,12 +19,10 @@ import br.com.wgsdev.resfood.core.validation.Groups;
 public class Cozinha {
 
   @Id
-  //@NotNull(groups = Groups.CozinhaId.class)
   @EqualsAndHashCode.Include
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotBlank
   @Column(nullable = false)
   private String nome;
 
