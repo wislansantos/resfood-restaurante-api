@@ -37,6 +37,7 @@ public class CadastroRestauranteService {
 		try {
 			buscarOuFalhar(restauranteId);
 			restauranteRepository.deleteById(restauranteId);
+			restauranteRepository.flush();
 		} catch (DataIntegrityViolationException e) {
 			throw new EntidadeEmUsoException(
 				String.format(MSG_RESTAURANTE_EM_USO, restauranteId));
