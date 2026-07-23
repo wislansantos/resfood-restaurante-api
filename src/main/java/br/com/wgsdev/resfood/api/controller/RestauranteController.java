@@ -78,4 +78,16 @@ public class RestauranteController {
     }
   }
 
+  @PostMapping("/{restauranteId}/ativar")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void ativar(@PathVariable Long restauranteId) {
+    cadastroRestaurante.ativar(restauranteId);
+  }
+
+  @PostMapping("/{restauranteId}/inativar")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void inativar(@PathVariable Long restauranteId) {
+    cadastroRestaurante.inativar(restauranteId);
+  }
+
 }
