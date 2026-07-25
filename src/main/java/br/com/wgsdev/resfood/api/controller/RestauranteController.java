@@ -23,6 +23,7 @@ import br.com.wgsdev.resfood.api.assembler.RestauranteInputDisassembler;
 import br.com.wgsdev.resfood.api.assembler.RestauranteModelAssembler;
 import br.com.wgsdev.resfood.api.model.RestauranteModel;
 import br.com.wgsdev.resfood.api.model.input.RestauranteInput;
+import br.com.wgsdev.resfood.domain.exception.CidadeNaoEncontradaException;
 import br.com.wgsdev.resfood.domain.exception.CozinhaNaoEncontradaException;
 
 @RestController
@@ -60,7 +61,7 @@ public class RestauranteController {
       Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
 
       return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restaurante));
-    } catch (CozinhaNaoEncontradaException e) {
+    } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
       throw new NegocioException(e.getMessage(), e);
     }
   }
@@ -73,7 +74,7 @@ public class RestauranteController {
 
     try {
       return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restauranteAtual));
-    } catch (CozinhaNaoEncontradaException e) {
+    } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
       throw new NegocioException(e.getMessage(), e);
     }
   }

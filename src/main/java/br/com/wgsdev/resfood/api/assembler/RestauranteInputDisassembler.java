@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.com.wgsdev.resfood.api.model.input.RestauranteInput;
+import br.com.wgsdev.resfood.domain.model.Cidade;
 import br.com.wgsdev.resfood.domain.model.Cozinha;
 import br.com.wgsdev.resfood.domain.model.Restaurante;
 
@@ -19,8 +20,12 @@ public class RestauranteInputDisassembler {
   }
 
   public void copyToDomainObject(RestauranteInput restauranteInput, Restaurante restaurante) {
-    // A linha imediatamente abaixo evita uma exception do Hibernate
+    // As tres linhas de código imediatamente abaixo
+    // evitam uma exception do Hibernate
     restaurante.setCozinha(new Cozinha());
+    if (restaurante.getEndereco() != null) {
+      restaurante.getEndereco().setCidade(new Cidade());
+    }
 
     modelMapper.map(restauranteInput, restaurante);
   }
