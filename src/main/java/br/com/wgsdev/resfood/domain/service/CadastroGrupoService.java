@@ -1,0 +1,42 @@
+package br.com.wgsdev.resfood.domain.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import br.com.wgsdev.resfood.domain.exception.EntidadeEmUsoException;
+import br.com.wgsdev.resfood.domain.exception.GrupoNaoEncontradoException;
+import br.com.wgsdev.resfood.domain.model.Grupo;
+import br.com.wgsdev.resfood.domain.repository.GrupoRepository;
+
+@Service
+public class CadastroGrupoService {
+
+  private static final String MSG_GRUPO_EM_USO = "Grupo de código %d não pode ser removido, pois está em uso";
+
+  @Autowired
+  private GrupoRepository grupoRepository;
+
+  @Transactional
+  public Grupo salvar(Grupo grupo) {
+    return grupoRepository.save(grupo);
+  }
+
+  @Transactional
+  public void excluir(Long grupoId) {
+    try {
+      buscarOuFalhar(grupoId);
+      grupoRepository.deleteById(grupoId);
+      grupoRepository.flush();
+    } catch (DataIntegrityViolationException e) {
+      throw new EntidadeEmUsoException(String.format(MSG_GRUPO_EM_USO, grupoId));
+    }
+  }
+
+  public Grupo buscarOuFalhar(Long grupoId) {
+    return grupoRepository.findById(grupoId)
+        .orElseThrow(() -> new GrupoNaoEncontradoException(grupoId));
+  }
+
+}
