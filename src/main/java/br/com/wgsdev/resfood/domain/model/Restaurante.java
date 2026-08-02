@@ -1,25 +1,26 @@
 package br.com.wgsdev.resfood.domain.model;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.ArrayList;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.Embedded;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -45,7 +46,7 @@ public class Restaurante {
 
   @Embedded
   private Endereco endereco;
-  
+
   private Boolean ativo = Boolean.TRUE;
 
   @CreationTimestamp
@@ -58,7 +59,7 @@ public class Restaurante {
 
   @ManyToMany
   @JoinTable(name = "restaurante_forma_pagamento", joinColumns = @JoinColumn(name = "restaurante_id"), inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id"))
-  private List<FormaPagamento> formasPagamento = new ArrayList<>();
+  private Set<FormaPagamento> formasPagamento = new HashSet<>();
 
   @OneToMany(mappedBy = "restaurante")
   private List<Produto> produtos = new ArrayList<>();
@@ -66,9 +67,17 @@ public class Restaurante {
   public void ativar() {
     setAtivo(true);
   }
-  
+
   public void inativar() {
     setAtivo(false);
   }
-  
+
+  public boolean removerFormaPagamento(FormaPagamento formaPagamento) {
+    return getFormasPagamento().remove(formaPagamento);
+  }
+
+  public boolean adicionarFormaPagamento(FormaPagamento formaPagamento) {
+    return getFormasPagamento().add(formaPagamento);
+  }
+
 }
