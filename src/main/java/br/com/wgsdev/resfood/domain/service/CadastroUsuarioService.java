@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.wgsdev.resfood.domain.exception.NegocioException;
 import br.com.wgsdev.resfood.domain.exception.UsuarioNaoEncontradoException;
+import br.com.wgsdev.resfood.domain.model.Grupo;
 import br.com.wgsdev.resfood.domain.model.Usuario;
 import br.com.wgsdev.resfood.domain.repository.UsuarioRepository;
 
@@ -16,6 +17,9 @@ public class CadastroUsuarioService {
 
   @Autowired
   private UsuarioRepository usuarioRepository;
+  
+  @Autowired
+  private CadastroGrupoService cadastroGrupo;
 
   @Transactional
   public Usuario salvar(Usuario usuario) {
@@ -41,7 +45,23 @@ public class CadastroUsuarioService {
 
     usuario.setSenha(novaSenha);
   }
-
+  
+  @Transactional
+  public void desassociarGrupo(Long usuarioId, Long grupoId) {
+    Usuario usuario = buscarOuFalhar(usuarioId);
+    Grupo grupo = cadastroGrupo.buscarOuFalhar(grupoId);
+    
+    usuario.removerGrupo(grupo);
+  }
+  
+  @Transactional
+  public void associarGrupo(Long usuarioId, Long grupoId) {
+    Usuario usuario = buscarOuFalhar(usuarioId);
+    Grupo grupo = cadastroGrupo.buscarOuFalhar(grupoId);
+    
+    usuario.adicionarGrupo(grupo);
+  }
+  
   public Usuario buscarOuFalhar(Long usuarioId) {
     return usuarioRepository.findById(usuarioId)
         .orElseThrow(() -> new UsuarioNaoEncontradoException(usuarioId));
