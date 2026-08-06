@@ -2,30 +2,30 @@ package br.com.wgsdev.resfood.api.controller;
 
 import java.util.List;
 
-import jakarta.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import br.com.wgsdev.resfood.domain.model.Restaurante;
-import br.com.wgsdev.resfood.domain.repository.RestauranteRepository;
-import br.com.wgsdev.resfood.domain.service.CadastroRestauranteService;
-import br.com.wgsdev.resfood.domain.exception.NegocioException;
 import br.com.wgsdev.resfood.api.assembler.RestauranteInputDisassembler;
 import br.com.wgsdev.resfood.api.assembler.RestauranteModelAssembler;
 import br.com.wgsdev.resfood.api.model.RestauranteModel;
 import br.com.wgsdev.resfood.api.model.input.RestauranteInput;
 import br.com.wgsdev.resfood.domain.exception.CidadeNaoEncontradaException;
 import br.com.wgsdev.resfood.domain.exception.CozinhaNaoEncontradaException;
+import br.com.wgsdev.resfood.domain.exception.NegocioException;
 import br.com.wgsdev.resfood.domain.exception.RestauranteNaoEncontradoException;
+import br.com.wgsdev.resfood.domain.model.Restaurante;
+import br.com.wgsdev.resfood.domain.repository.RestauranteRepository;
+import br.com.wgsdev.resfood.domain.service.CadastroRestauranteService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -91,7 +91,7 @@ public class RestauranteController {
   public void inativar(@PathVariable Long restauranteId) {
     cadastroRestaurante.inativar(restauranteId);
   }
-  
+
   @PutMapping("/ativacoes")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void ativarMultiplos(@RequestBody List<Long> restauranteIds) {
@@ -101,7 +101,7 @@ public class RestauranteController {
       throw new NegocioException(e.getMessage(), e);
     }
   }
-  
+
   @DeleteMapping("/ativacoes")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void inativarMultiplos(@RequestBody List<Long> restauranteIds) {
@@ -111,13 +111,13 @@ public class RestauranteController {
       throw new NegocioException(e.getMessage(), e);
     }
   }
-  
+
   @PutMapping("/{restauranteId}/abertura")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void abrir(@PathVariable Long restauranteId) {
     cadastroRestaurante.abrir(restauranteId);
   }
-  
+
   @PutMapping("/{restauranteId}/fechamento")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void fechar(@PathVariable Long restauranteId) {

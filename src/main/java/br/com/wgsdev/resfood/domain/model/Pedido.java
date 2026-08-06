@@ -7,6 +7,8 @@ import java.time.OffsetDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.ManyToOne;
@@ -40,8 +42,8 @@ public class Pedido {
     @Embedded
     private Endereco enderecoEntrega;
     
-    @Column(nullable = false)
-    private StatusPedido status;
+    @Enumerated(EnumType.STRING)
+    private StatusPedido status = StatusPedido.CRIADO;
     
     @CreationTimestamp
     @Column(nullable = false)
@@ -65,5 +67,21 @@ public class Pedido {
     
     @OneToMany(mappedBy = "pedido")
     private List<ItemPedido> itens = new ArrayList<>();
+    
+    public void calcularValorTotal() {
+        this.subtotal = getItens().stream()
+            .map(item -> item.getPrecoTotal())
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        
+        this.valorTotal = this.subtotal.add(this.taxaFrete);
+    }
+    
+    public void definirFrete() {
+        setTaxaFrete(getRestaurante().getTaxaFrete());
+    }
+    
+    public void atribuirPedidoAosItens() {
+        getItens().forEach(item -> item.setPedido(this));
+    }
     
 }
