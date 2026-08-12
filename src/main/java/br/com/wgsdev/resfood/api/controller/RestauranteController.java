@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +20,7 @@ import br.com.wgsdev.resfood.api.assembler.RestauranteInputDisassembler;
 import br.com.wgsdev.resfood.api.assembler.RestauranteModelAssembler;
 import br.com.wgsdev.resfood.api.model.RestauranteModel;
 import br.com.wgsdev.resfood.api.model.input.RestauranteInput;
+import br.com.wgsdev.resfood.api.model.view.RestauranteView;
 import br.com.wgsdev.resfood.domain.exception.CidadeNaoEncontradaException;
 import br.com.wgsdev.resfood.domain.exception.CozinhaNaoEncontradaException;
 import br.com.wgsdev.resfood.domain.exception.NegocioException;
@@ -25,6 +28,7 @@ import br.com.wgsdev.resfood.domain.exception.RestauranteNaoEncontradoException;
 import br.com.wgsdev.resfood.domain.model.Restaurante;
 import br.com.wgsdev.resfood.domain.repository.RestauranteRepository;
 import br.com.wgsdev.resfood.domain.service.CadastroRestauranteService;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.Valid;
 
 @RestController
@@ -43,9 +47,16 @@ public class RestauranteController {
   @Autowired
   private RestauranteInputDisassembler restauranteInputDisassembler;
 
+  @JsonView(RestauranteView.Resumo.class)
   @GetMapping
   public List<RestauranteModel> listar() {
     return restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
+  }
+  
+  @JsonView(RestauranteView.ApenasNome.class)
+  @GetMapping(params = "projecao=apenas-nome")
+  public List<RestauranteModel> listarApenasNomes() {
+    return listar();
   }
 
   @GetMapping("/{restauranteId}")
